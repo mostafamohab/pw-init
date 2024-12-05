@@ -26,7 +26,7 @@ export default defineConfig ({
 
     projects: [
         {
-          name: 'chromium',
+          name: 'chrome',
           use: { ...devices['Desktop Chrome'] },
         },
         {
@@ -34,8 +34,8 @@ export default defineConfig ({
           use: { ...devices['Desktop Firefox'] },
         },
         {
-          name: 'webkit',
-          use: { ...devices['Desktop Safari'] },
+          name: 'MicrosoftEdge',
+          use: { ...devices['Desktop Edge'] },
         },
       ],
 });
