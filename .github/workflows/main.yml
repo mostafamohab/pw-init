@@ -106,6 +106,9 @@ jobs:
 
         # Verify installation
         allure --version
+
+        # Run Allure command with explicit classpath
+        java -cp "$ALLURE_HOME/lib/*" io.qameta.allure.CommandLine
     
     - name: Generate Allure Report
       run: 
