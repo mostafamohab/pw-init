@@ -85,73 +85,73 @@ jobs:
     - name: Install Allure Commandline 
       run: |
     
-        # Define Allure version
-        ALLURE_VERSION=2.17.3
-        ALLURE_URL="https://github.com/allure-framework/allure2/releases/download/${ALLURE_VERSION}/allure-${ALLURE_VERSION}.tgz"
+          # Define Allure version
+          ALLURE_VERSION=2.17.3
+          ALLURE_URL="https://github.com/allure-framework/allure2/releases/download/${ALLURE_VERSION}/allure-${ALLURE_VERSION}.tgz"
     
-        # Download Allure
-        curl -L ${ALLURE_URL} -o allure.tgz
+          # Download Allure
+          curl -L ${ALLURE_URL} -o allure.tgz
 
-        # Verify if the file is downloaded and check its type
-        file allure.tgz
+          # Verify if the file is downloaded and check its type
+          file allure.tgz
 
-        # Check if the file is a valid tarball
-        if [[ $(file allure.tgz) != *"gzip compressed data"* ]]; then
-          echo "Error: Downloaded file is not a valid tarball"
-          exit 1
-        fi
+          # Check if the file is a valid tarball
+          if [[ $(file allure.tgz) != *"gzip compressed data"* ]]; then
+            echo "Error: Downloaded file is not a valid tarball"
+            exit 1
+          fi
 
-        # Extract Allure tarball
-        tar -xzf allure.tgz -C /tmp
+          # Extract Allure tarball
+          tar -xzf allure.tgz -C /tmp
 
-        # Verify if Allure is extracted correctly
-        ls /tmp/allure-${ALLURE_VERSION}
+          # Verify if Allure is extracted correctly
+          ls /tmp/allure-${ALLURE_VERSION}
 
-        # Move Allure to /usr/local/bin to make it globally accessible
-        sudo mv /tmp/allure-${ALLURE_VERSION}/bin/allure /usr/local/bin/
+          # Move Allure to /usr/local/bin to make it globally accessible
+          sudo mv /tmp/allure-${ALLURE_VERSION}/bin/allure /usr/local/bin/
 
-        # Verify installation
-        allure --version
+          # Verify installation
+          allure --version
 
-        # Set Allure home directory for Java command
-        export ALLURE_HOME=/tmp/allure-${ALLURE_VERSION}
+          # Set Allure home directory for Java command
+          export ALLURE_HOME=/tmp/allure-${ALLURE_VERSION}
 
-        # Ensure the Allure binary is in the system path
-        sudo ln -s /tmp/allure-${ALLURE_VERSION}/bin/allure /usr/local/bin/allure
+          # Ensure the Allure binary is in the system path
+          sudo ln -s /tmp/allure-${ALLURE_VERSION}/bin/allure /usr/local/bin/allure
 
-        # Run Allure command with explicit classpath
-        export ALLURE_LIB_PATH="/tmp/allure-${ALLURE_VERSION}/lib/*"
-        java -cp "$ALLURE_HOME/lib/*" io.qameta.allure.CommandLine
+          # Run Allure command with explicit classpath
+          export ALLURE_LIB_PATH="/tmp/allure-${ALLURE_VERSION}/lib/*"
+          java -cp "$ALLURE_HOME/lib/*" io.qameta.allure.CommandLine
 
     - name: Generate Allure Report
       run: 
         # Generate Allure report
         allure generate allure-results --clean -o allure-report
-  
-    - name: Upload Playwright Report as Pipeline Artifact
+      
+    - name : Upload Playwright Report as Pipeline Artifact
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: Playwright_Report
-        path: playwright-report/
-  
+          name: Playwright_Report
+          path: playwright-report/
+      
     - name: Upload Playwright Report HTML as Pipeline Artifact
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: Playwright_Report_HTML
-        path: playwright-report/index.html
-  
+          name: Playwright_Report_HTML
+          path: playwright-report/index.html
+      
     - name: Upload Allure Report as Pipeline Artifact
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: Allure_Report
-        path: allure-report/
-          
+          name: Allure_Report
+          path: allure-report/
+              
     - name: Upload Allure Report HTML as Pipeline Artifact
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: Allure_Report_HTML
-        path: allure-report/index.html
+          name: Allure_Report_HTML
+          path: allure-report/index.html
