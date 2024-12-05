@@ -1,14 +1,14 @@
 import { devices ,defineConfig} from '@playwright/test';
 
 export default defineConfig ({
-    testDire: 'src',
+    testDir: 'src',
     timeout: 35 * 1000,
     use: {
         baseURL: "https://www.automationexercise.com",
         headless: false,
         trace: 'retain-on-failure',
         screenshot: 'only-on-failure',
-        launchOption: {
+        launchOptions: {
             slowMo: 50
         }
     },
@@ -21,7 +21,7 @@ export default defineConfig ({
           outputFolder: "reports/allure-results",
           detail: true
         }
-    ]
+    ],
     ],
 
     projects: [
