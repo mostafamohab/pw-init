@@ -26,6 +26,24 @@ jobs:
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
 
+    - name: Choose browser for Playwright tests
+      id: browser-choice
+      run: echo "Selected browser: ${{ github.event.inputs.browser || 'chromium' }}"  
+      # Default to chromium if not provided
+      env:
+        browser: "${{ github.event.inputs.browser || 'chromium' }}"  
+        # You can specify the browser through GitHub actions inputs
+
+    - name: Run Playwright tests
+      run: |
+        if [[ "${{ github.event.inputs.browser || 'chromium' }}" == "firefox" ]]; then
+          xvfb-run npx playwright test --project=firefox
+        elif [[ "${{ github.event.inputs.browser || 'chromium' }}" == "webkit" ]]; then
+          xvfb-run npx playwright test --project=webkit
+        else
+          xvfb-run npx playwright test --project=chromium
+        fi
+
     - name: Run Playwright tests
       run: xvfb-run npx playwright test  # Run the tests with xvfb
 
