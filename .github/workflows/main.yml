@@ -55,10 +55,18 @@ jobs:
     - name: Compile TypeScript
       run: npx tsc # Only needed if TypeScript compilation is required
 
-    - name: Run Playwright Tests
+    - name: Run Playwright Tests with xvfb-run
       run: |
-              npx playwright test --project="${{ github.event.inputs.targetBrowser || 'chromium' }}"
-    
+        # Check if Xvfb is needed (for headed mode)
+        if [ '${{ github.event.inputs.targetBrowser }}' == 'firefox'       ] ||
+           [ '${{ github.event.inputs.targetBrowser }}' == 'chrome'        ]  ||
+           [ '${{ github.event.inputs.targetBrowser }}' == 'microsoftedge' ]; then
+          echo "Running tests with xvfb-run to simulate display"
+          xvfb-run -a npx playwright test --project="${{ github.event.inputs.targetBrowser || 'chromium' }}"
+        else
+          echo "Running tests headlessly"
+          npx playwright test --project="${{ github.event.inputs.targetBrowser || 'chromium' }}"
+        fi
     
     - name: Upload Playwright Report as Pipeline Artifact
       if: always()
