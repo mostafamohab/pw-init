@@ -110,6 +110,9 @@ jobs:
         # Set Allure home directory for Java command
         export ALLURE_HOME=/tmp/allure-${ALLURE_VERSION}
 
+        # Ensure the Allure binary is in the system path
+        sudo ln -s /tmp/allure-${ALLURE_VERSION}/bin/allure /usr/local/bin/allure
+
         # Run Allure command with explicit classpath
         java -cp "$ALLURE_HOME/lib/*" io.qameta.allure.CommandLine
     
