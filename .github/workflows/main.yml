@@ -77,8 +77,16 @@ jobs:
         sudo apt-get install -y openjdk-11-jdk
 
         # Install Allure Commandline
-        curl -sL https://github.com/allure-framework/allure2/releases/download/2.17.3/allure-2.17.3.tgz | tar xz -C /tmp
-        sudo mv allure-2.17.3/bin/allure /usr/local/bin/
+        curl -sL https://github.com/allure-framework/allure2/releases/download/${ALLURE_VERSION}/allure-${ALLURE_VERSION}.tgz -o allure.tgz
+
+        # Extract Allure tarball
+        tar -xzf allure.tgz -C /tmp
+
+        # Verify if Allure is extracted correctly
+        ls /tmp/allure-${ALLURE_VERSION}
+
+        # Move Allure to /usr/local/bin to make it globally accessible
+        sudo mv /tmp/allure-${ALLURE_VERSION}/bin/allure /usr/local/bin/
 
         # Verify installation
         allure --version
