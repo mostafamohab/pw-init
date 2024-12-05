@@ -52,6 +52,9 @@ jobs:
               echo "Browser not supported"
             fi
 
+    - name: Compile TypeScript
+      run: npx tsc # Only needed if TypeScript compilation is required
+
     - name: Run Playwright Tests
       run: |
               npx playwright test --project="${{ github.event.inputs.targetBrowser || 'chromium' }}"
