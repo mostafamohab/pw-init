@@ -76,8 +76,21 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y openjdk-11-jdk
 
-        # Install Allure Commandline
-        curl -sL https://github.com/allure-framework/allure2/releases/download/${ALLURE_VERSION}/allure-${ALLURE_VERSION}.tgz -o allure.tgz
+        # Define Allure version
+        ALLURE_VERSION=2.17.3
+        ALLURE_URL="https://github.com/allure-framework/allure2/releases/download/${ALLURE_VERSION}/allure-${ALLURE_VERSION}.tgz"
+    
+        # Download Allure
+        curl -L ${ALLURE_URL} -o allure.tgz
+
+        # Verify if the file is downloaded and check its type
+         file allure.tgz
+
+        # Check if the file is a valid tarball
+        if [[ $(file allure.tgz) != *"gzip compressed data"* ]]; then
+        echo "Error: Downloaded file is not a valid tarball"
+        exit 1
+          fi
 
         # Extract Allure tarball
         tar -xzf allure.tgz -C /tmp
