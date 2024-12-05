@@ -1,4 +1,6 @@
-const config = {
+import { devices ,defineConfig} from '@playwright/test';
+
+export default defineConfig ({
     testDire: 'src',
     timeout: 35 * 1000,
     use: {
@@ -10,8 +12,30 @@ const config = {
             slowMo: 50
         }
     },
-    reporter : 'html'
-};
+    reporter : [
+    ['html'],
+    [
+        "allure-playwright",
+        {
+          open: "always",
+          outputFolder: "reports/allure-results",
+          detail: true
+        }
+    ]
+    ],
 
-
-export default config;
+    projects: [
+        {
+          name: 'chromium',
+          use: { ...devices['Desktop Chrome'] },
+        },
+        {
+          name: 'firefox',
+          use: { ...devices['Desktop Firefox'] },
+        },
+        {
+          name: 'webkit',
+          use: { ...devices['Desktop Safari'] },
+        },
+      ],
+});
