@@ -107,13 +107,16 @@ jobs:
         # Verify installation
         allure --version
 
+        # Set Allure home directory for Java command
+        export ALLURE_HOME=/tmp/allure-${ALLURE_VERSION}
+
         # Run Allure command with explicit classpath
         java -cp "$ALLURE_HOME/lib/*" io.qameta.allure.CommandLine
     
     - name: Generate Allure Report
       run: 
-          # Generate Allure report
-          allure generate allure-results --clean -o allure-report
+        # Generate Allure report
+        allure generate allure-results --clean -o allure-report
   
     - name: Upload Playwright Report as Pipeline Artifact
       if: always()
