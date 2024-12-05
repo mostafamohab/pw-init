@@ -69,13 +69,22 @@ jobs:
           echo "Running tests headlessly"
           npx playwright test --project="${{ github.event.inputs.targetBrowser || 'chromium' }}"
         fi
+
+    - name: Install Java and Allure Commandline
+      run: |
+        # Install Java (needed for Allure)
+        sudo apt-get update
+        sudo apt-get install -y openjdk-11-jdk
+
+        # Install Allure Commandline
+        curl -sL https://github.com/allure-framework/allure2/releases/download/2.17.3/allure-2.17.3.tgz | tar xz
+        sudo mv allure-2.17.3/bin/allure /usr/local/bin/
+
+        # Verify installation
+        allure --version
     
     - name: Generate Allure Report
-      run: |
-          # Install Allure commandline
-          curl -sL https://github.com/allure-framework/allure2/releases/download/2.17.3/allure-2.17.3.tgz | tar xz
-          sudo mv allure-2.17.3/bin/allure /usr/local/bin/
-          
+      run: 
           # Generate Allure report
           allure generate allure-results --clean -o allure-report
   
