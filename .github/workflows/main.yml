@@ -33,6 +33,7 @@ jobs:
           npm install
           npm install playwright
           npm install typescript ts-node @types/node
+          npm install allure-playwright
 
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
@@ -68,16 +69,39 @@ jobs:
           npx playwright test --project="${{ github.event.inputs.targetBrowser || 'chromium' }}"
         fi
     
+        - name: Generate Allure Report
+        run: |
+          # Install Allure commandline
+          curl -sL https://github.com/allure-framework/allure2/releases/download/2.17.3/allure-2.17.3.tgz | tar xz
+          sudo mv allure-2.17.3/bin/allure /usr/local/bin/
+          
+          # Generate Allure report
+          allure generate allure-results --clean -o allure-report
+  
     - name: Upload Playwright Report as Pipeline Artifact
       if: always()
       uses: actions/upload-artifact@v4
       with:
-          name: Playwright_Report
-          path: playwright-report/
-    
+        name: Playwright_Report
+        path: playwright-report/
+  
     - name: Upload Playwright Report HTML as Pipeline Artifact
       if: always()
       uses: actions/upload-artifact@v4
       with:
-          name: Playwright_Report_HTML
-          path: playwright-report/index.html
+        name: Playwright_Report_HTML
+        path: playwright-report/index.html
+  
+    - name: Upload Allure Report as Pipeline Artifact
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: Allure_Report
+        path: allure-report/
+          
+    - name: Upload Allure Report HTML as Pipeline Artifact
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: Allure_Report_HTML
+        path: allure-report/index.html
