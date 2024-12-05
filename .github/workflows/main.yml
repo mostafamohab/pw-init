@@ -26,7 +26,7 @@ jobs:
     - name: Setup Node.js env
       uses: actions/setup-node@v4
       with:
-       node-version: lts/*
+        node-version: lts/*
 
     - name: Install dependencies
       run: |
@@ -62,7 +62,7 @@ jobs:
         if [ '${{ github.event.inputs.targetBrowser }}' == 'firefox'       ] ||
            [ '${{ github.event.inputs.targetBrowser }}' == 'chrome'        ] ||
            [ '${{ github.event.inputs.targetBrowser }}' == 'microsoftedge' ]; 
-          then
+        then
           echo "Running tests with xvfb-run to simulate display"
           xvfb-run -a npx playwright test --project="${{ github.event.inputs.targetBrowser || 'chromium' }}"
         else
@@ -87,7 +87,7 @@ jobs:
         curl -L ${ALLURE_URL} -o allure.tgz
 
         # Verify if the file is downloaded and check its type
-         file allure.tgz
+        file allure.tgz
 
         # Check if the file is a valid tarball
         if [[ $(file allure.tgz) != *"gzip compressed data"* ]]; then
