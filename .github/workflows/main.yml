@@ -40,18 +40,18 @@ jobs:
   
     - name: Log Browser Version
       run: |
-          if [ '${{ github.event.inputs.targetBrowser }}' == 'firefox' ]; then
+        if [ '${{ github.event.inputs.targetBrowser }}' == 'firefox' ]; then
             BROWSER_VERSION=$(npx playwright show-browser firefox --version)
             echo "Firefox Browser Version: $BROWSER_VERSION"
-          elif [ '${{ github.event.inputs.targetBrowser }}' == 'chrome' ]; then
+        elif [ '${{ github.event.inputs.targetBrowser }}' == 'chrome' ]; then
             BROWSER_VERSION=$(npx playwright show-browser chromium --version)
             echo "Google Chrome Browser Version: $BROWSER_VERSION"
-          elif [ '${{ github.event.inputs.targetBrowser }}' == 'microsoftedge' ]; then
+        elif [ '${{ github.event.inputs.targetBrowser }}' == 'microsoftedge' ]; then
             BROWSER_VERSION=$(npx playwright show-browser webkit --version)
             echo "Microsoft Edge Browser Version: $BROWSER_VERSION"
-          else
+        else
             echo "Browser not supported"
-          fi
+        fi
 
     - name: Compile TypeScript
       run: npx tsc # Only needed if TypeScript compilation is required
