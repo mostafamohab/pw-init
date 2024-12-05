@@ -22,10 +22,8 @@ Tools and Technologies:
 
 7- JSON files
 
-8- Rest Assured APIs (3 Different APIs)
+8- Node JS
 
 9- Github Actions
 
 10- Allure Reports
-
-11 - Docker Compose Container
