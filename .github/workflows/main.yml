@@ -1,55 +1,72 @@
 name: Playwright Tests
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
     branches: [ main ]
 
+  workflow_dispatch:
+    inputs:
+     targetBrowser:
+      description: 'Choose Target Browser'
+      default: 'chrome'
+      type: choice
+      options:
+       - firefox
+       - chrome
+       - microsoftedge
+
 jobs:
-  test:
-    timeout-minutes: 60
+  Custom_Linux_Grid:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout Code
+      uses: actions/checkout@v4
 
-    - name: Install xvfb
-      run: sudo apt-get install -y xvfb
-
-    - uses: actions/setup-node@v4
+    - name: Setup Node.js env
+      uses: actions/setup-node@v4
       with:
-        node-version: lts/*
+       node-version: lts/*
+
     - name: Install dependencies
-      run: npm ci
+      run: |
+          npm install
+          npm install playwright
+          npm install typescript ts-node @types/node
 
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
-
-    - name: Choose browser for Playwright tests
-      id: browser-choice
-      run: echo "Selected browser: ${{ github.event.inputs.browser || 'chromium' }}"  
-      # Default to chromium if not provided
-      env:
-        browser: "${{ github.event.inputs.browser || 'chromium' }}"  
-        # You can specify the browser through GitHub actions inputs
-
-    - name: Run Playwright tests
+  
+    - name: Log Browser Version
       run: |
-        if [[ "${{ github.event.inputs.browser || 'chromium' }}" == "firefox" ]]; then
-          xvfb-run npx playwright test --project=firefox
-        elif [[ "${{ github.event.inputs.browser || 'chromium' }}" == "webkit" ]]; then
-          xvfb-run npx playwright test --project=webkit
-        else
-          xvfb-run npx playwright test --project=chromium
-        fi
+            if [ '${{ github.event.inputs.targetBrowser }}' == 'firefox' ]; then
+              BROWSER_VERSION=$(npx playwright show-browser firefox --version)
+              echo "Firefox Browser Version: $BROWSER_VERSION"
+            elif [ '${{ github.event.inputs.targetBrowser }}' == 'chrome' ]; then
+              BROWSER_VERSION=$(npx playwright show-browser chromium --version)
+              echo "Google Chrome Browser Version: $BROWSER_VERSION"
+            elif [ '${{ github.event.inputs.targetBrowser }}' == 'microsoftedge' ]; then
+              BROWSER_VERSION=$(npx playwright show-browser webkit --version)
+              echo "Microsoft Edge Browser Version: $BROWSER_VERSION"
+            else
+              echo "Browser not supported"
+            fi
 
-    - name: Run Playwright tests
-      run: xvfb-run npx playwright test  # Run the tests with xvfb
-
-    - uses: actions/upload-artifact@v4
-      if: ${{!cancelled()}}
+    - name: Run Playwright Tests
+      run: |
+              npx playwright test --project="${{ github.event.inputs.targetBrowser || 'chromium' }}"
+    
+    
+    - name: Upload Playwright Report as Pipeline Artifact
+      if: always()
+      uses: actions/upload-artifact@v4
       with:
-        name: playwright-report
-        path: playwright-report/
-        retention-days: 30
+          name: Playwright_Report
+          path: playwright-report/
+    
+    - name: Upload Playwright Report HTML as Pipeline Artifact
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+          name: Playwright_Report_HTML
+          path: playwright-report/index.html
