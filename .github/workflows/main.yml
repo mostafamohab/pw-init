@@ -30,28 +30,28 @@ jobs:
 
     - name: Install dependencies
       run: |
-          npm install
-          npm install playwright
-          npm install typescript ts-node @types/node
-          npm install allure-playwright
+        npm install
+        npm install playwright
+        npm install typescript ts-node @types/node
+        npm install allure-playwright
 
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
   
     - name: Log Browser Version
       run: |
-            if [ '${{ github.event.inputs.targetBrowser }}' == 'firefox' ]; then
-              BROWSER_VERSION=$(npx playwright show-browser firefox --version)
-              echo "Firefox Browser Version: $BROWSER_VERSION"
-            elif [ '${{ github.event.inputs.targetBrowser }}' == 'chrome' ]; then
-              BROWSER_VERSION=$(npx playwright show-browser chromium --version)
-              echo "Google Chrome Browser Version: $BROWSER_VERSION"
-            elif [ '${{ github.event.inputs.targetBrowser }}' == 'microsoftedge' ]; then
-              BROWSER_VERSION=$(npx playwright show-browser webkit --version)
-              echo "Microsoft Edge Browser Version: $BROWSER_VERSION"
-            else
-              echo "Browser not supported"
-            fi
+          if [ '${{ github.event.inputs.targetBrowser }}' == 'firefox' ]; then
+            BROWSER_VERSION=$(npx playwright show-browser firefox --version)
+            echo "Firefox Browser Version: $BROWSER_VERSION"
+          elif [ '${{ github.event.inputs.targetBrowser }}' == 'chrome' ]; then
+            BROWSER_VERSION=$(npx playwright show-browser chromium --version)
+            echo "Google Chrome Browser Version: $BROWSER_VERSION"
+          elif [ '${{ github.event.inputs.targetBrowser }}' == 'microsoftedge' ]; then
+            BROWSER_VERSION=$(npx playwright show-browser webkit --version)
+            echo "Microsoft Edge Browser Version: $BROWSER_VERSION"
+          else
+            echo "Browser not supported"
+          fi
 
     - name: Compile TypeScript
       run: npx tsc # Only needed if TypeScript compilation is required
@@ -69,7 +69,7 @@ jobs:
           npx playwright test --project="${{ github.event.inputs.targetBrowser || 'chromium' }}"
         fi
 
-    - name: Install Java and Allure Commandline
+    - name: Install Java and Set JAVA_HOME
       run: |
         # Install Java (needed for Allure)
         sudo apt-get update
@@ -78,6 +78,13 @@ jobs:
         # Check if Java is installed
         java -version
 
+        sudo update-alternatives --config java
+        echo "JAVA_HOME is set to: $JAVA_HOME"
+        export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+
+    - name: Install Allure Commandline 
+      run: |
+    
         # Define Allure version
         ALLURE_VERSION=2.17.3
         ALLURE_URL="https://github.com/allure-framework/allure2/releases/download/${ALLURE_VERSION}/allure-${ALLURE_VERSION}.tgz"
@@ -115,7 +122,7 @@ jobs:
         # Run Allure command with explicit classpath
         export ALLURE_LIB_PATH="/tmp/allure-${ALLURE_VERSION}/lib/*"
         java -cp "$ALLURE_HOME/lib/*" io.qameta.allure.CommandLine
-    
+
     - name: Generate Allure Report
       run: 
         # Generate Allure report
