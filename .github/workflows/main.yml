@@ -61,8 +61,7 @@ jobs:
         # Check if Xvfb is needed (for headed mode)
         if [ '${{ github.event.inputs.targetBrowser }}' == 'firefox'       ] ||
            [ '${{ github.event.inputs.targetBrowser }}' == 'chrome'        ] ||
-           [ '${{ github.event.inputs.targetBrowser }}' == 'microsoftedge' ]; 
-        then
+           [ '${{ github.event.inputs.targetBrowser }}' == 'microsoftedge' ]; then
           echo "Running tests with xvfb-run to simulate display"
           xvfb-run -a npx playwright test --project="${{ github.event.inputs.targetBrowser || 'chromium' }}"
         else
@@ -114,6 +113,7 @@ jobs:
         sudo ln -s /tmp/allure-${ALLURE_VERSION}/bin/allure /usr/local/bin/allure
 
         # Run Allure command with explicit classpath
+        export ALLURE_LIB_PATH="/tmp/allure-${ALLURE_VERSION}/lib/*"
         java -cp "$ALLURE_HOME/lib/*" io.qameta.allure.CommandLine
     
     - name: Generate Allure Report
