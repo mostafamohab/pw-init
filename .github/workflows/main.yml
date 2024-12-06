@@ -1,157 +1,166 @@
 name: Playwright Tests
-
-on:
+'on':
   pull_request:
-    branches: [ main ]
-
+    branches:
+      - main
   workflow_dispatch:
     inputs:
-     targetBrowser:
-      description: 'Choose Target Browser'
-      default: 'chrome'
-      type: choice
-      options:
-       - firefox
-       - chrome
-       - microsoftedge
-
+      targetBrowser:
+        description: Choose Target Browser
+        default: chrome
+        type: choice
+        options:
+          - firefox
+          - chrome
+          - microsoftedge
 jobs:
   Custom_Linux_Grid:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Setup Node.js env
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+      - name: Install dependencies
+        run: |
+          npm install
+          npm install playwright
+          npm install typescript ts-node @types/node
+          npm install allure-playwright
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+      - name: Log Browser Version
+        run: >
+          if [ '${{ github.event.inputs.targetBrowser }}' == 'firefox' ]; then
+              BROWSER_VERSION=$(npx playwright show-browser firefox --version)
+              echo "Firefox Browser Version: $BROWSER_VERSION"
+          elif [ '${{ github.event.inputs.targetBrowser }}' == 'chrome' ]; then
+              BROWSER_VERSION=$(npx playwright show-browser chromium --version)
+              echo "Google Chrome Browser Version: $BROWSER_VERSION"
+          elif [ '${{ github.event.inputs.targetBrowser }}' == 'microsoftedge'
+          ]; then
+              BROWSER_VERSION=$(npx playwright show-browser webkit --version)
+              echo "Microsoft Edge Browser Version: $BROWSER_VERSION"
+          else
+              echo "Browser not supported"
+          fi
+      - name: Compile TypeScript
+        run: npx tsc
+      - name: Run Playwright Tests with xvfb-run
+        run: >
+          # Check if Xvfb is needed (for headed mode)
 
-    - name: Setup Node.js env
-      uses: actions/setup-node@v4
-      with:
-        node-version: lts/*
+          if [ '${{ github.event.inputs.targetBrowser }}' == 'firefox'       ]
+          ||
+             [ '${{ github.event.inputs.targetBrowser }}' == 'chrome'        ] ||
+             [ '${{ github.event.inputs.targetBrowser }}' == 'microsoftedge' ]; then
+            echo "Running tests with xvfb-run to simulate display"
+            xvfb-run -a npx playwright test --project="${{ github.event.inputs.targetBrowser || 'chromium' }}"
+          else
+            echo "Running tests headlessly"
+            npx playwright test --project="${{ github.event.inputs.targetBrowser || 'chromium' }}"
+          fi
+      - name: Install Java and Set JAVA_HOME
+        run: |
+          # Install Java (needed for Allure)
+          sudo apt-get update
+          sudo apt-get install -y openjdk-11-jdk
 
-    - name: Install dependencies
-      run: |
-        npm install
-        npm install playwright
-        npm install typescript ts-node @types/node
-        npm install allure-playwright
+          # Check if Java is installed
+          java -version
 
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
-  
-    - name: Log Browser Version
-      run: |
-        if [ '${{ github.event.inputs.targetBrowser }}' == 'firefox' ]; then
-            BROWSER_VERSION=$(npx playwright show-browser firefox --version)
-            echo "Firefox Browser Version: $BROWSER_VERSION"
-        elif [ '${{ github.event.inputs.targetBrowser }}' == 'chrome' ]; then
-            BROWSER_VERSION=$(npx playwright show-browser chromium --version)
-            echo "Google Chrome Browser Version: $BROWSER_VERSION"
-        elif [ '${{ github.event.inputs.targetBrowser }}' == 'microsoftedge' ]; then
-            BROWSER_VERSION=$(npx playwright show-browser webkit --version)
-            echo "Microsoft Edge Browser Version: $BROWSER_VERSION"
-        else
-            echo "Browser not supported"
-        fi
+          sudo update-alternatives --config java
+          echo "JAVA_HOME is set to: $JAVA_HOME"
+          export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+      - name: Install Allure Commandline
+        run: >
 
-    - name: Compile TypeScript
-      run: npx tsc # Only needed if TypeScript compilation is required
-
-    - name: Run Playwright Tests with xvfb-run
-      run: |
-        # Check if Xvfb is needed (for headed mode)
-        if [ '${{ github.event.inputs.targetBrowser }}' == 'firefox'       ] ||
-           [ '${{ github.event.inputs.targetBrowser }}' == 'chrome'        ] ||
-           [ '${{ github.event.inputs.targetBrowser }}' == 'microsoftedge' ]; then
-          echo "Running tests with xvfb-run to simulate display"
-          xvfb-run -a npx playwright test --project="${{ github.event.inputs.targetBrowser || 'chromium' }}"
-        else
-          echo "Running tests headlessly"
-          npx playwright test --project="${{ github.event.inputs.targetBrowser || 'chromium' }}"
-        fi
-
-    - name: Install Java and Set JAVA_HOME
-      run: |
-        # Install Java (needed for Allure)
-        sudo apt-get update
-        sudo apt-get install -y openjdk-11-jdk
-
-        # Check if Java is installed
-        java -version
-
-        sudo update-alternatives --config java
-        echo "JAVA_HOME is set to: $JAVA_HOME"
-        export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
-
-    - name: Install Allure Commandline 
-      run: |
-    
           # Define Allure version
+
           ALLURE_VERSION=2.17.3
+
           ALLURE_URL="https://github.com/allure-framework/allure2/releases/download/${ALLURE_VERSION}/allure-${ALLURE_VERSION}.tgz"
-    
+
+
           # Download Allure
+
           curl -L ${ALLURE_URL} -o allure.tgz
 
+
           # Verify if the file is downloaded and check its type
+
           file allure.tgz
 
+
           # Check if the file is a valid tarball
+
           if [[ $(file allure.tgz) != *"gzip compressed data"* ]]; then
             echo "Error: Downloaded file is not a valid tarball"
             exit 1
           fi
 
+
           # Extract Allure tarball
+
           tar -xzf allure.tgz -C /tmp
 
+
           # Verify if Allure is extracted correctly
+
           ls /tmp/allure-${ALLURE_VERSION}
 
+
           # Move Allure to /usr/local/bin to make it globally accessible
+
           sudo mv /tmp/allure-${ALLURE_VERSION}/bin/allure /usr/local/bin/
 
+
           # Verify installation
+
           allure --version
 
+
           # Set Allure home directory for Java command
+
           export ALLURE_HOME=/tmp/allure-${ALLURE_VERSION}
 
+
           # Ensure the Allure binary is in the system path
-          sudo ln -s /tmp/allure-${ALLURE_VERSION}/bin/allure /usr/local/bin/allure
+
+          sudo ln -s /tmp/allure-${ALLURE_VERSION}/bin/allure
+          /usr/local/bin/allure
+
 
           # Run Allure command with explicit classpath
-          export ALLURE_LIB_PATH="/tmp/allure-${ALLURE_VERSION}/lib/*"
-          java -cp "$ALLURE_HOME/lib/*" io.qameta.allure.CommandLine
 
-    - name: Generate Allure Report
-      run: 
-        # Generate Allure report
-        allure generate allure-results --clean -o allure-report
-      
-    - name : Upload Playwright Report as Pipeline Artifact
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
+          export ALLURE_LIB_PATH="/tmp/allure-${ALLURE_VERSION}/lib/*"
+
+          java -cp "$ALLURE_HOME/lib/*" io.qameta.allure.CommandLine
+      - name: Generate Allure Report
+        run: allure generate allure-results --clean -o allure-report
+      - name: Upload Playwright Report as Pipeline Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
           name: Playwright_Report
           path: playwright-report/
-      
-    - name: Upload Playwright Report HTML as Pipeline Artifact
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
+      - name: Upload Playwright Report HTML as Pipeline Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
           name: Playwright_Report_HTML
           path: playwright-report/index.html
-      
-    - name: Upload Allure Report as Pipeline Artifact
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
+      - name: Upload Allure Report as Pipeline Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
           name: Allure_Report
           path: allure-report/
-              
-    - name: Upload Allure Report HTML as Pipeline Artifact
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
+      - name: Upload Allure Report HTML as Pipeline Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
           name: Allure_Report_HTML
           path: allure-report/index.html
