@@ -26,6 +26,4 @@ Tools and Technologies:
 
 9- Github Actions
 
-10- Allure Reports
-
-11- xvfb-run
+10- xvfb-run
