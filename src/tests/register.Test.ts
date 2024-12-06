@@ -1,5 +1,5 @@
 import { test, expect, chromium, Browser } from "@playwright/test"
-import { BaseTest } from "./basetest.test";
+import { BaseTest } from "./basetest";
 
 test.describe("Register User", async() => {
 let basetest: BaseTest;

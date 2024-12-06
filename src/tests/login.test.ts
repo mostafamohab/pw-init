@@ -1,5 +1,5 @@
 import { test, expect} from "@playwright/test"
-import { BaseTest } from "./basetest.test";
+import { BaseTest } from "./basetest";
 
 test.describe("Login User", async() => {
 let basetest : BaseTest;

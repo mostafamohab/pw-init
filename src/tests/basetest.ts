@@ -1,6 +1,6 @@
 // base-test.ts
 import { test, chromium, Browser, Page } from '@playwright/test';
-import { IBaseTest } from './base.test';
+import { IBaseTest } from './base.interface';
 import LoginPage from '../pages/Login.Page';
 import HomePage from '../pages/Home.Page';
 import SignupPage from "../pages/Signup.Page";
