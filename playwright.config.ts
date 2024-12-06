@@ -1,12 +1,13 @@
 import { devices ,defineConfig} from '@playwright/test';
 
 export default defineConfig ({
+    workers: 8, // Increase the number of workers for parallel execution
     testDir: 'src',
     timeout: 35 * 1000,
     use: {
         baseURL: "https://www.automationexercise.com",
         headless: false,
-        trace: 'retain-on-failure',
+        trace: 'on', // This will generate a trace for every test
         screenshot: 'only-on-failure',
         launchOptions: {
             slowMo: 50
@@ -14,14 +15,6 @@ export default defineConfig ({
     },
     reporter : [
     ['html'],
-    [
-        "allure-playwright",
-        {
-          open: "always",
-          outputFolder: "reports/allure-results",
-          detail: true
-        }
-    ],
     ],
 
     projects: [
