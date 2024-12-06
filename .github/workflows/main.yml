@@ -73,14 +73,14 @@ jobs:
       run: |
         # Install Java (needed for Allure)
         sudo apt-get update
-        sudo apt-get install -y openjdk-11-jdk
+        sudo apt-get install -y openjdk-10-jdk
 
         # Check if Java is installed
         java -version
 
         sudo update-alternatives --config java
         echo "JAVA_HOME is set to: $JAVA_HOME"
-        export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+        export JAVA_HOME=/usr/lib/jvm/java-10-openjdk-amd64
 
     - name: Install Allure Commandline 
       run: |
