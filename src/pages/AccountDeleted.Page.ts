@@ -1,24 +1,25 @@
 import { Locator, Page } from "@playwright/test"
+import { BasePage } from "./BasePage.Page";
 
-export class AccountDeletedPage{
+export class AccountDeletedPage extends BasePage{
 
     getAccountDeletedText: Locator;
     getContinueButton: Locator;
 
-    constructor(private page: Page)
+    constructor(page: Page)
     {
-    //Locators
-    this.getAccountDeletedText = page.getByText("Account Deleted!");
-    this.getContinueButton = page.locator("//*[@data-qa='continue-button']");
-    }
-
-    public async getElementByText(text:string){
-
-        return this.page.getByText(text);
+    super(page);
+        //Locators
+        this.getAccountDeletedText = page.getByText("Account Deleted!");
+        this.getContinueButton = page.locator("//*[@data-qa='continue-button']");
     }
 
     public async verifyAccountDeleted() {
         await this.getAccountDeletedText.isVisible();
+    }
+
+    public async navigate(): Promise<void> {
+        await this.page.goto('${baseUrl}'+'/account_deleted');
     }
 }
 

@@ -1,6 +1,7 @@
 import { expect, Locator, Page } from "@playwright/test";
+import { BasePage } from "./BasePage.Page";
 
-export class LoginPage {
+export class LoginPage extends BasePage{
     getLoginEmailInput:Locator;
     getLoginPasswordInput: Locator;
     getLoginButton: Locator;
@@ -8,22 +9,23 @@ export class LoginPage {
     getSignupEmailInput: Locator;
     getSignupButton: Locator;
 
-    constructor(private page: Page)
+    constructor(page: Page)
     {
-    //Locators
-    this.getLoginEmailInput = page.locator("[data-qa='login-email']");
-    this.getLoginPasswordInput =page.locator("[data-qa='login-password']");
-    this.getLoginButton =page.locator("[data-qa='login-button']");
+        super(page);  // Call the constructor of BasePage
+        //Locators
+        this.getLoginEmailInput = page.locator("[data-qa='login-email']");
+        this.getLoginPasswordInput =page.locator("[data-qa='login-password']");
+        this.getLoginButton =page.locator("[data-qa='login-button']");
 
-    this.getSignupNameInput =page.locator("[data-qa='signup-name']");
-    this.getSignupEmailInput =page.locator("[data-qa='signup-email']");
-    this.getSignupButton =page.locator("[data-qa='signup-button']");
+        this.getSignupNameInput =page.locator("[data-qa='signup-name']");
+        this.getSignupEmailInput =page.locator("[data-qa='signup-email']");
+        this.getSignupButton =page.locator("[data-qa='signup-button']");
     }
 
     //Methods
 
-    public async navigate(){
-      await this.page.goto('/login');
+    public async navigate(): Promise<void> {
+      await this.page.goto(`${this.baseUrl}`+`/login`);
     }
 
     public async login(email: string, password: string){
@@ -36,11 +38,6 @@ export class LoginPage {
         await this.getSignupNameInput.fill(name);
         await this.getSignupEmailInput.fill(email);
         await this.getSignupButton.click();
-    }
-
-    public async getElementByText(text:string){
-        return this.page.getByText(text);
-    
     }
 }
 

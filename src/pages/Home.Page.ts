@@ -1,27 +1,25 @@
 import { Locator, Page } from "@playwright/test";
+import {BasePage} from "./BasePage.Page";
 
-export class HomePage{
+export class HomePage extends BasePage{
+  
     getDeleteAccountButton: Locator;
 
-    constructor(private page: Page)
+    constructor(page: Page)
     {
-    //Locators
-    this.getDeleteAccountButton= page.getByRole('link',{name : 'Delete Account'});
+        super(page);  // Call the constructor of BasePage
+        this.getDeleteAccountButton= page.getByRole('link',{name : 'Delete Account'});
     }
     //Methods
 
-    public async navigate(){
+    // Additional HomePage-specific methods (if needed)
+    public async clickDeleteAccountButton(): Promise<void> {
+    await this.getDeleteAccountButton.click();
+    }
+
+    public async navigate(): Promise<void> {
       await this.page.goto('${baseUrl}');
-    }
-
-    public async navigateGeneral(path:any){
-      await this.page.goto('${this.BaseURL}${path}');
-    }
-
-    public async getElementByText(text:string){
-
-      return this.page.getByText(text);
-    }
+  }
 }
 
 export default HomePage
