@@ -1,4 +1,5 @@
 name: Playwright Tests
+
 'on':
   pull_request:
     branches:
@@ -13,63 +14,73 @@ name: Playwright Tests
           - firefox
           - chrome
           - microsoftedge
+
 jobs:
   Custom_Linux_Grid:
     runs-on: ubuntu-latest
-    steps:
 
+    steps:
+      # Step 1: Checkout the code
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      # Step 2: Set up Node.js environment
       - name: Setup Node.js env
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
 
+      # Step 3: Install Yarn (if not installed)
+      - name: Install Yarn
+        run: |
+          npm install -g yarn
+
+      # Step 4: Install dependencies using Yarn
       - name: Install dependencies
         run: |
-          npm install
-          npm install playwright
-          npm install typescript ts-node @types/node
+          yarn install
+          yarn add playwright
+          yarn add typescript ts-node @types/node
 
+      # Step 5: Install Playwright Browsers
       - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+        run: yarn playwright install --with-deps
 
+      # Step 6: Log Browser Version
       - name: Log Browser Version
-        run: >
+        run: |
           if [ '${{ github.event.inputs.targetBrowser }}' == 'firefox' ]; then
-              BROWSER_VERSION=$(npx playwright show-browser firefox --version)
+              BROWSER_VERSION=$(yarn playwright show-browser firefox --version)
               echo "Firefox Browser Version: $BROWSER_VERSION"
           elif [ '${{ github.event.inputs.targetBrowser }}' == 'chrome' ]; then
-              BROWSER_VERSION=$(npx playwright show-browser chromium --version)
+              BROWSER_VERSION=$(yarn playwright show-browser chromium --version)
               echo "Google Chrome Browser Version: $BROWSER_VERSION"
-          elif [ '${{ github.event.inputs.targetBrowser }}' == 'microsoftedge'
-          ]; then
-              BROWSER_VERSION=$(npx playwright show-browser webkit --version)
+          elif [ '${{ github.event.inputs.targetBrowser }}' == 'microsoftedge' ]; then
+              BROWSER_VERSION=$(yarn playwright show-browser webkit --version)
               echo "Microsoft Edge Browser Version: $BROWSER_VERSION"
           else
               echo "Browser not supported"
           fi
 
+      # Step 7: Compile TypeScript
       - name: Compile TypeScript
-        run: npx tsc
+        run: yarn tsc
 
+      # Step 8: Run Playwright Tests with xvfb-run
       - name: Run Playwright Tests with xvfb-run
-        run: >
+        run: |
           # Check if Xvfb is needed (for headed mode)
-
-          if [ '${{ github.event.inputs.targetBrowser }}' == 'firefox'       ]
-          ||
-             [ '${{ github.event.inputs.targetBrowser }}' == 'chrome'        ] ||
+          if [ '${{ github.event.inputs.targetBrowser }}' == 'firefox' ] ||
+             [ '${{ github.event.inputs.targetBrowser }}' == 'chrome' ] ||
              [ '${{ github.event.inputs.targetBrowser }}' == 'microsoftedge' ]; then
             echo "Running tests with xvfb-run to simulate display"
-            xvfb-run -a npx playwright test --project="${{ github.event.inputs.targetBrowser || 'chromium' }}"
+            xvfb-run -a yarn playwright test --project="${{ github.event.inputs.targetBrowser || 'chromium' }}"
           else
             echo "Running tests headlessly"
-            npx playwright test --project="${{ github.event.inputs.targetBrowser || 'chromium' }}"
+            yarn playwright test --project="${{ github.event.inputs.targetBrowser || 'chromium' }}"
           fi
 
-
+      # Step 9: Upload Playwright Report as Pipeline Artifact
       - name: Upload Playwright Report as Pipeline Artifact
         if: always()
         uses: actions/upload-artifact@v4
@@ -77,6 +88,7 @@ jobs:
           name: Playwright_Report
           path: playwright-report/
 
+      # Step 10: Upload Playwright Report HTML as Pipeline Artifact
       - name: Upload Playwright Report HTML as Pipeline Artifact
         if: always()
         uses: actions/upload-artifact@v4

@@ -27,3 +27,5 @@ Tools and Technologies:
 9- Github Actions
 
 10- xvfb-run
+
+11- Yarn
