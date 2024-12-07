@@ -1,4 +1,4 @@
-import { test, expect, chromium, Browser } from "@playwright/test"
+import { test, expect} from "@playwright/test"
 import { BaseTest } from "./basetest";
 
 test.describe("Register User", async() => {
