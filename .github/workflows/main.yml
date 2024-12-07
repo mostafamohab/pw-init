@@ -66,7 +66,12 @@ jobs:
       - name: Compile TypeScript
         run: yarn tsc
 
-      # Step 8: Run Playwright Tests with xvfb-run
+      # Step 8: Ensure Playwright Artifacts exists
+      - name: Ensure Playwright Artifacts Directory Exists
+        run: |
+          mkdir -p test-results/.playwright-artifacts-0/traces
+
+      # Step 9: Run Playwright Tests with xvfb-run
       - name: Run Playwright Tests with xvfb-run
         run: |
           # Check if Xvfb is needed (for headed mode)
@@ -80,7 +85,7 @@ jobs:
             yarn playwright test --project="${{ github.event.inputs.targetBrowser || 'chromium' }}"
           fi
 
-      # Step 9: Upload Playwright Report as Pipeline Artifact
+      # Step 10: Upload Playwright Report as Pipeline Artifact
       - name: Upload Playwright Report as Pipeline Artifact
         if: always()
         uses: actions/upload-artifact@v4
@@ -88,7 +93,7 @@ jobs:
           name: Playwright_Report
           path: playwright-report/
 
-      # Step 10: Upload Playwright Report HTML as Pipeline Artifact
+      # Step 11: Upload Playwright Report HTML as Pipeline Artifact
       - name: Upload Playwright Report HTML as Pipeline Artifact
         if: always()
         uses: actions/upload-artifact@v4
