@@ -1,7 +1,7 @@
-// base-page.ts
 import { Locator, Page } from '@playwright/test';
 import { IBasePage } from './IBasePage.Interface';
 
+// base-page.ts
 export class BasePage implements IBasePage {
   // Define shared properties
   protected baseUrl: string = 'https://www.automationexercise.com'; // Define a default base URL

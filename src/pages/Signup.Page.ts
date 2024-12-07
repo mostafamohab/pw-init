@@ -1,4 +1,4 @@
-import { Page ,Locator} from "@playwright/test";
+import { Locator, Page } from "@playwright/test";
 import { BasePage } from "./BasePage.Page";
 
 export class SignupPage extends BasePage{
@@ -19,7 +19,7 @@ export class SignupPage extends BasePage{
     getZipCodeInput: Locator;
     getMobileNumberInput: Locator;
     getCreateAccountButton: Locator;
-    
+
     constructor(page: Page)
     {
         super(page);  // Call the constructor of BasePage
