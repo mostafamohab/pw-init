@@ -8,12 +8,12 @@ name: Playwright Tests
     inputs:
       targetBrowser:
         description: Choose Target Browser
-        default: chrome
+        default: chromium
         type: choice
         options:
           - firefox
-          - chrome
-          - microsoftedge
+          - chromium
+          - webkit
 
 jobs:
   Custom_Linux_Grid:
@@ -52,10 +52,10 @@ jobs:
           if [ '${{ github.event.inputs.targetBrowser }}' == 'firefox' ]; then
               BROWSER_VERSION=$(yarn playwright show-browser firefox --version)
               echo "Firefox Browser Version: $BROWSER_VERSION"
-          elif [ '${{ github.event.inputs.targetBrowser }}' == 'chrome' ]; then
+          elif [ '${{ github.event.inputs.targetBrowser }}' == 'chromium' ]; then
               BROWSER_VERSION=$(yarn playwright show-browser chromium --version)
               echo "Google Chrome Browser Version: $BROWSER_VERSION"
-          elif [ '${{ github.event.inputs.targetBrowser }}' == 'microsoftedge' ]; then
+          elif [ '${{ github.event.inputs.targetBrowser }}' == 'webkit' ]; then
               BROWSER_VERSION=$(yarn playwright show-browser webkit --version)
               echo "Microsoft Edge Browser Version: $BROWSER_VERSION"
           else
@@ -71,8 +71,8 @@ jobs:
         run: |
           # Check if Xvfb is needed (for headed mode)
           if [ '${{ github.event.inputs.targetBrowser }}' == 'firefox' ] ||
-             [ '${{ github.event.inputs.targetBrowser }}' == 'chrome' ] ||
-             [ '${{ github.event.inputs.targetBrowser }}' == 'microsoftedge' ]; then
+             [ '${{ github.event.inputs.targetBrowser }}' == 'chromium' ] ||
+             [ '${{ github.event.inputs.targetBrowser }}' == 'webkit' ]; then
             echo "Running tests with xvfb-run to simulate display"
             xvfb-run -a yarn playwright test --project="${{ github.event.inputs.targetBrowser || 'chromium' }}"
           else
