@@ -2,7 +2,7 @@ import { devices ,defineConfig} from '@playwright/test';
 
 export default defineConfig ({
     workers: 8, // Increase the number of workers for parallel execution
-    testDir: 'src',
+    testDir: './test',
     timeout: 35 * 1000,
     use: {
         baseURL: "https://www.automationexercise.com",
