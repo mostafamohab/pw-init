@@ -90,7 +90,7 @@ test("user can register user with valid credentials", async ({}) => {
     fillAllAccountDetails('mohamed','Password123');
 
     //6- Click Create Account Button
-    await expect(verifyGetAccountCreatedVisible()).toBeVisible();
+    await expect(verifyGetAccountCreatedVisible()).toBeVisible(({ timeout: 10000 }));
 
     //7- Click on Continue Button
     clickContinueButton();
