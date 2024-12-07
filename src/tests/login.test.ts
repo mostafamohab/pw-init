@@ -44,7 +44,7 @@ test('user can login with valid credentials', async() => {
     loginAction('mohamed999@gmail.com','Password123');
     
     // Verify that "Logged in as username" is visible
-    await expect(verifyValidLogin()).toBeVisible();
+    await expect (verifyValidLogin()).toBeVisible();
 });
 
 test('user can login with invalid credentials', async() => {

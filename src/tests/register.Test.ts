@@ -78,31 +78,31 @@ test("user can register user with valid credentials", async ({}) => {
     loginNavigate();
 
     //2- verify "New User Signup!" is visible
-    await (expect(verifySignup()).toBeVisible());
+    await expect(verifySignup()).toBeVisible();
 
     //3- Login with valid Random username and email address
     loginWithRandomEmail('Mohamed')
 
     //4- verify "Enter Account Information" is visible
-    await (expect(verifyEnterAccountInfoVisible()).toBeVisible());
+    await expect(verifyEnterAccountInfoVisible()).toBeVisible();
 
     //5- Fill All Account Details
     fillAllAccountDetails('mohamed','Password123');
 
     //6- Click Create Account Button
-    await (expect(verifyGetAccountCreatedVisible()).toBeVisible());
+    await expect(verifyGetAccountCreatedVisible()).toBeVisible();
 
     //7- Click on Continue Button
     clickContinueButton();
 
     //8- Verify that 'Logged in as Mohamed' in homepage
-    await (expect(verifyLoggedInToBeVisible()).toBeVisible());
+    expect(verifyLoggedInToBeVisible()).toBeVisible();
 
     //9- Click on 'Delete Account' from page header
     clickOnDeleteAccount();
 
     //10- Verify that 'Account Deleted!' Text is Visible
-    await (expect(verifyAccountDeletedToBeVisible()).toBeVisible());
+    await expect(verifyAccountDeletedToBeVisible()).toBeVisible();
 });
 
 });
