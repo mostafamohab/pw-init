@@ -21,7 +21,7 @@ test.afterEach(async () => {
 
 });
 
-async function loginAction(email:string , password: string)
+async function loginAction(email:string , password: string): Promise<void> 
 {
     await basetest.loginPage.login(email,password);
 }

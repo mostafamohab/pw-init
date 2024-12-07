@@ -21,7 +21,7 @@ function generateRandomEmail(): string
   return randomEmail;
 }
 
-async function loginNavigate()
+async function loginNavigate(): Promise<void> 
 {
   await basetest.loginPage.navigate();
 }
@@ -31,7 +31,7 @@ function verifySignup(): Locator
   return basetest.loginPage.getElementByText("New User Signup!");
 }
 
-async function loginWithRandomEmail(text:string)
+async function loginWithRandomEmail(text:string): Promise<void> 
 {
   await basetest.loginPage.signup(text,generateRandomEmail())
 }
@@ -41,17 +41,17 @@ function verifyEnterAccountInfoVisible(): Locator
  return basetest.signupPage.getElementByText("Enter Account Information");
 }
 
-async function fillAllAccountDetails(username:string,password:string)
+async function fillAllAccountDetails(username:string,password:string): Promise<void> 
 {
   await basetest.signupPage.fillAccountInfoDetails(username,password);
 }
 
-function verifyGetAccountCreatedVisible()
+function verifyGetAccountCreatedVisible(): Locator
 {
   return basetest.accountcreatedPage.getAccountCreatedText;
 }
 
-async function clickContinueButton()
+async function clickContinueButton(): Promise<void> 
 {
   await (basetest.accountcreatedPage.getContinueButton).click();
 }
@@ -61,12 +61,12 @@ function verifyLoggedInToBeVisible(): Locator
   return basetest.homePage.getElementByText("Logged in as Mohamed");
 }
 
-async function clickOnDeleteAccount()
+async function clickOnDeleteAccount(): Promise<void> 
 {
   await basetest.homePage.getElementByText("Delete Account").click();
 }
 
-function verifyAccountDeletedToBeVisible()
+function verifyAccountDeletedToBeVisible(): Locator
 {
   return basetest.accountdeletedPage.getAccountDeletedText;
 }
