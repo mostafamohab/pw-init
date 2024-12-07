@@ -19,7 +19,7 @@ export class AccountDeletedPage extends BasePage{
     }
 
     public async navigate(): Promise<void> {
-        await this.page.goto('${baseUrl}'+'/account_deleted');
+        await this.page.goto(this.baseUrl+'/account_deleted');
     }
 }
 

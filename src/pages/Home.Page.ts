@@ -18,7 +18,7 @@ export class HomePage extends BasePage{
     }
 
     public async navigate(): Promise<void> {
-      await this.page.goto('${baseUrl}');
+      await this.page.goto(this.baseUrl);
   }
 }
 
