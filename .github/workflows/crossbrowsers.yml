@@ -1,0 +1,68 @@
+name: Playwright Tests
+
+'on':
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  Custom_Linux_Grid:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Node.js environment
+      - name: Setup Node.js env
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      # Step 3: Install Yarn (if not installed)
+      - name: Install Yarn
+        run: |
+          npm install -g yarn
+
+      # Step 4: Install dependencies using Yarn
+      - name: Install dependencies
+        run: |
+          yarn install
+          yarn add playwright
+          yarn add typescript ts-node @types/node
+
+      # Step 5: Install Playwright Browsers
+      - name: Install Playwright Browsers
+        run: yarn playwright install --with-deps
+
+      # Step 6: Compile TypeScript
+      - name: Compile TypeScript
+        run: yarn tsc
+
+      # Step 7: Run Playwright Tests with xvfb-run (for headless mode)
+      - name: Run Playwright Tests with xvfb-run
+        run: |
+          echo "Running tests on all browsers: Chromium, Firefox, and WebKit (Edge)"
+          # Run tests across all browsers in parallel using the `projects` configuration
+          xvfb-run -a yarn playwright test --project=chromium &
+          xvfb-run -a yarn playwright test --project=firefox &
+          xvfb-run -a yarn playwright test --project=webkit &
+          wait
+
+      # Step 8: Upload Playwright Report as Pipeline Artifact
+      - name: Upload Playwright Report as Pipeline Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Playwright_Report
+          path: playwright-report/
+
+      # Step 9: Upload Playwright Report HTML as Pipeline Artifact
+      - name: Upload Playwright Report HTML as Pipeline Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Playwright_Report_HTML
+          path: playwright-report/index.html
