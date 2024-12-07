@@ -1,4 +1,4 @@
-import { test, expect} from "@playwright/test"
+import { test, expect, Locator} from "@playwright/test"
 import { BaseTest } from "./basetest";
 
 test.describe("Register User", async() => {
@@ -21,36 +21,88 @@ function generateRandomEmail(): string
   return randomEmail;
 }
 
+async function loginNavigate()
+{
+  await basetest.loginPage.navigate();
+}
+
+function verifySignup(): Locator
+{
+  return basetest.loginPage.getElementByText("New User Signup!");
+}
+
+async function loginWithRandomEmail(text:string)
+{
+  await basetest.loginPage.signup(text,generateRandomEmail())
+}
+
+function verifyEnterAccountInfoVisible(): Locator
+{
+ return basetest.signupPage.getElementByText("Enter Account Information");
+}
+
+async function fillAllAccountDetails(username:string,password:string)
+{
+  await basetest.signupPage.fillAccountInfoDetails(username,password);
+}
+
+function verifyGetAccountCreatedVisible()
+{
+  return basetest.accountcreatedPage.getAccountCreatedText;
+}
+
+async function clickContinueButton()
+{
+  await (basetest.accountcreatedPage.getContinueButton).click();
+}
+
+function verifyLoggedInToBeVisible(): Locator
+{
+  return basetest.homePage.getElementByText("Logged in as Mohamed");
+}
+
+async function clickOnDeleteAccount()
+{
+  await basetest.homePage.getElementByText("Delete Account").click();
+}
+
+function verifyAccountDeletedToBeVisible()
+{
+  return basetest.accountdeletedPage.getAccountDeletedText;
+}
+
+
 
 test("user can register user with valid credentials", async ({}) => {
-    await basetest.loginPage.navigate();
+    //1- Navigate to Login Page
+    loginNavigate();
 
-    //1- verify "New User Signup!" is visible
-    expect(basetest.loginPage.getElementByText("New User Signup!")).toBeVisible();
+    //2- verify "New User Signup!" is visible
+    await (expect(verifySignup()).toBeVisible());
 
-    //2- Login with valid Random username and email address
-    await basetest.loginPage.signup('Mohamed',generateRandomEmail())
+    //3- Login with valid Random username and email address
+    loginWithRandomEmail('Mohamed')
 
-    //3- verify "Enter Account Information" is visible
-    expect(basetest.signupPage.getElementByText("Enter Account Information")).toBeVisible;
+    //4- verify "Enter Account Information" is visible
+    await (expect(verifyEnterAccountInfoVisible()).toBeVisible());
 
-    //4- Fill All Account Details
-    await basetest.signupPage.fillAccountInfoDetails('mohamed','Password123');
+    //5- Fill All Account Details
+    fillAllAccountDetails('mohamed','Password123');
 
-    //5- Click Create Account Button
-    await expect(basetest.accountcreatedPage.getAccountCreatedText).toBeVisible();
+    //6- Click Create Account Button
+    await (expect(verifyGetAccountCreatedVisible()).toBeVisible());
 
-    //6- Click on Continue Button
-    await (basetest.accountcreatedPage.getContinueButton).click();
+    //7- Click on Continue Button
+    clickContinueButton();
 
-    //7- Verify that 'Logged in as Mohamed' in homepage
-    expect(basetest.homePage.getElementByText("Logged in as Mohamed")).toBeVisible;
+    //8- Verify that 'Logged in as Mohamed' in homepage
+    await (expect(verifyLoggedInToBeVisible()).toBeVisible());
 
-    //8- Click on 'Delete Account' from page header
-    await basetest.homePage.getElementByText("Delete Account").click();
+    //9- Click on 'Delete Account' from page header
+    clickOnDeleteAccount();
 
-    //9- Verify that 'Account Deleted!' Text is Visible
-    await expect(basetest.accountdeletedPage.getAccountDeletedText).toBeVisible();
+    //10- Verify that 'Account Deleted!' Text is Visible
+    await (expect(verifyAccountDeletedToBeVisible()).toBeVisible());
 });
 
 });

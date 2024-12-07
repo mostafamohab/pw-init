@@ -1,4 +1,4 @@
-import { test, expect} from "@playwright/test"
+import { test, expect, Locator} from "@playwright/test"
 import { BaseTest } from "./basetest";
 
 test.describe("Login User", async() => {
@@ -21,29 +21,39 @@ test.afterEach(async () => {
 
 });
 
+async function loginAction(email:string , password: string)
+{
+    await basetest.loginPage.login(email,password);
+}
+
+function verifyValidLogin():Locator
+{
+    const isLoggedIn = basetest.homePage.getElementByText(' Logged in as Mohamed');
+    return isLoggedIn;
+}
+
+function verifyInvalidLogin():Locator
+{
+    const hasError= basetest.loginPage.getElementByText('Your email or password is incorrect!');
+    return hasError;
+}
 
 test('user can login with valid credentials', async() => {
 
     // Write Valid Credentials then Submit
-    await basetest.loginPage.login('mohamed999@gmail.com','Password123');
-
-
-    const isLoggedIn = basetest.homePage.getElementByText(' Logged in as Mohamed');
+    loginAction('mohamed999@gmail.com','Password123');
     
     // Verify that "Logged in as username" is visible
-    await expect(isLoggedIn).toBeVisible();
-
+    await expect(verifyValidLogin()).toBeVisible();
 });
 
 test('user can login with invalid credentials', async() => {
 
     // Write Invalid Credentials then Submit
-    await basetest.loginPage.login('mohamed999345@gmail.com','Password123');
-
-    const hasError= basetest.loginPage.getElementByText('Your email or password is incorrect!');
+    loginAction('mohamed999345@gmail.com','Password123');
 
     // Verify that "Your email or password is incorrect" is visible
-    await expect (hasError).toBeVisible();
+    await expect (verifyInvalidLogin()).toBeVisible();
 });
 
 });

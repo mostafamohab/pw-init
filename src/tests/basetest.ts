@@ -40,7 +40,7 @@ export class BaseTest implements IBaseTest {
 }
 
 // Automatically run setup and teardown before and after each test
-test.beforeEach(async ({ page }) => {
+test.beforeEach(async () => {
   const baseTest = new BaseTest();
   await baseTest.setup(); // Runs setup for each test
 });
