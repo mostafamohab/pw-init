@@ -25,7 +25,7 @@ export class LoginPage extends BasePage{
     //Methods
 
     public async navigate(): Promise<void> {
-      await this.page.goto(this.baseUrl+'/login');
+      await this.page.goto(this.baseURL+'/login');
     }
 
     public async login(email: string, password: string){

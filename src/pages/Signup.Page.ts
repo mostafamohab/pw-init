@@ -46,7 +46,7 @@ export class SignupPage extends BasePage{
     //Methods
 
     public async navigate(): Promise<void> {
-      await this.page.goto(this.baseUrl+'/signup');
+      await this.page.goto(this.baseURL+'/signup');
     }
 
     public async fillAccountInfoDetails(username:string,password:string){

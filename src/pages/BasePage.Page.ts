@@ -4,7 +4,7 @@ import { IBasePage } from './IBasePage.Interface';
 // base-page.ts
 export class BasePage implements IBasePage {
   // Define shared properties
-  protected baseUrl: string = 'https://www.automationexercise.com'; // Define a default base URL
+  protected baseURL: string = 'https://www.automationexercise.com'; // Define a default base URL
 
   // Define locators
 
@@ -15,11 +15,11 @@ export class BasePage implements IBasePage {
 
   // Define shared methods
   public async navigate(): Promise<void> {
-    await this.page.goto(this.baseUrl);
+    await this.page.goto(this.baseURL);
   }
 
   public async navigateGeneral(path: string): Promise<void> {
-    await this.page.goto(`${this.baseUrl}${path}`);
+    await this.page.goto(`${this.baseURL}${path}`);
   }
 
   public getElementByText(text: string): Locator {

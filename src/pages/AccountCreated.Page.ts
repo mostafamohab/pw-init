@@ -15,7 +15,7 @@ export class AccountCreatedPage extends BasePage{
     }
 
     public async navigate(): Promise<void> {
-        await this.page.goto(this.baseUrl+'/account_created');
+        await this.page.goto(this.baseURL+'/account_created');
     }
 
 }
