@@ -1,31 +1,29 @@
 # E-Commerce-24
 
-An End to End Script for E-Commerce Website for Registration , Login and Cart Checkout Modules
+An End to End Script for E-Commerce Website for Registration and Login Modules
 
 http://www.automationexcercise.com
 
-Part 1 & 2 - Web Automation and API Automation:
+Part 1 - Web Automation:
 
 Tools and Technologies:
 
 1- Typescript
 
-2- Javascript
+2- Playwright
 
-3- Playwright
+3- Visual Studio Code
 
-4- Visual Studio Code
+4- Page Object Model
 
-5- Page Object Model
+5- YML Files
 
-6- YML Files
+6- JSON files
 
-7- JSON files
+7- Node JS
 
-8- Node JS
+8- Github Actions
 
-9- Github Actions
+9- xvfb-run
 
-10- xvfb-run
-
-11- Yarn
+10- Yarn
